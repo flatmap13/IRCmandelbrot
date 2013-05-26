@@ -1,7 +1,10 @@
-module IRCbot where
+module Main where
 import Network
 import System.IO
 import Text.Printf
+import Data.List
+import System.Exit
+import Control.Monad
 
 server = "irc.freenode.org"
 port = 6667
@@ -24,6 +27,20 @@ write h s t = do
 
 listen :: Handle -> IO ()
 listen h = forever $ do
-	s <- hGetLine h
+	t <- hGetLine h
+	let s = init t
+	if ping s then pong s else eval h (clean s)
 	putStrLn s
-	where forever a = do a; forever a
+	where
+	clean     = drop 1 . dropWhile (/= ':') . drop 1
+	ping x    = "PING :" `isPrefixOf` x
+	pong x    = write h "PONG" (':' : drop 6 x) 
+
+eval :: Handle -> String -> IO ()
+eval h "!quit" = write h "QUIT" ":Exiting" >> exitSuccess
+eval h x | "!id" `isPrefixOf` x = privmsg h (drop 4 x)
+eval _ _ = return ()
+
+privmsg :: Handle -> String -> IO ()
+privmsg h s = write h "PRIVMSG" (chan ++ " :" ++ s)
+
