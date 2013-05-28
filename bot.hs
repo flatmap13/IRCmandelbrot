@@ -33,8 +33,8 @@ connect = notify $ do
     return (Bot h t)
     where
     notify = bracket_
-        (printf "Connecting to %s...\n" server >> hFlush stdout)
-        (putStrLn "Done.")
+        (printf "Connecting to %s ... " server >> hFlush stdout)
+        (putStrLn "done.")
 
 run :: Net ()
 run = do
@@ -76,8 +76,8 @@ write s t = do
 uptime :: Net String
 uptime = do
     now <- io getClockTime
-    zero <- asks startTime
-    return . timeDiffToString $ diffClockTimes now zero
+    start <- asks startTime
+    return . timeDiffToString $ diffClockTimes now start
 
 io :: IO a -> Net a
 io = liftIO
