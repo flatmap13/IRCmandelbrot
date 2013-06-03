@@ -8,7 +8,7 @@ data Size = Size Int Int
 -- with the given size
 createBrot :: Size -> String
 createBrot s @ (Size w h) =
-    [ascii $ intensity x y s | x <- [0..w-1], y <- [0..h-1]]
+    [ascii $ intensity x y s | y <- [0 .. h-1],  x <- [0 .. w-1]]
 
 -- Translate a given intensity to an ascii character
 ascii :: Int -> Char
