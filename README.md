@@ -6,7 +6,7 @@ With an added command to display ASCII mandelbrot fractals.
 [2]: http://www.haskell.org/
 
 To interact with the bot send a message like:
-* WOPRbot: <command>
+* WOPRbot: &lt;command&gt;
 
 ### Commands
 * id <text> - echo's <text>
