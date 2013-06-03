@@ -9,7 +9,7 @@ To interact with the bot send a message like:
 * WOPRbot: &lt;command&gt;
 
 ### Commands
-* id &lt;text&gt; - echo's &lt;text&gt;
+* id &lt;text&gt; - prints &lt;text&gt;
 * uptime - prints bot uptime
 * mandelbrot &lt;width&gt; &lt;height&gt; - prints a mandelbrot fractal with given size
 * quit - stops the bot
