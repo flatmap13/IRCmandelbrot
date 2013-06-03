@@ -9,7 +9,9 @@ import Control.Arrow
 import Control.Monad
 import Control.Monad.Reader
 import Control.Exception
+import Control.Concurrent
 import Prelude hiding (catch)
+import Mandelbrot
 
 server = "irc.freenode.org"
 port = 6667
@@ -59,10 +61,27 @@ maybeEval s | (nick ++ ": ") `isPrefixOf` s = eval (clean s)
             where clean = dropWhile (== ' ') . drop 1 . dropWhile (/= ':') 
 
 eval :: String -> Net ()
-eval s | s == "uptime"       = uptime >>= privmsg
-       | s == "quit"         = write "QUIT" ":EXITING" >> io exitSuccess
-       | "id" `isPrefixOf` s = privmsg (dropWhile (== ' ') s)
+eval s | s == "uptime"               = uptime >>= privmsg
+       | s == "quit"                 = write "QUIT" ":EXITING" >> io exitSuccess
+       | "id" `isPrefixOf` s         = privmsg ((dropWhile (== ' ') . drop 2) s)
+       | "mandelbrot" `isPrefixOf` s = evalBrot s
        | otherwise           = return ()
+
+evalBrot :: String -> Net ()
+evalBrot s
+    | length args /= 2 = privmsg "Usage: mandelbrot width height" 
+    | otherwise = showBrot size $ createBrot size
+    where 
+    args = drop 1 $ words s
+    size = Size (read $ head args) (read $ args !! 1)
+
+showBrot :: Size -> String -> Net ()
+showBrot _ [] = return ()
+showBrot scr @ (Size w _) str = do
+    when (any (' ' /=) line) $ privmsg line
+    io $ threadDelay 1000000
+    showBrot scr $ drop w str
+    where line = take w str
 
 privmsg :: String -> Net ()
 privmsg s = write "PRIVMSG" (chan ++ " :" ++ s)
