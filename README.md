@@ -13,6 +13,3 @@ To interact with the bot send a message like:
 * uptime - prints bot uptime
 * mandelbrot &lt;width&gt; &lt;height&gt; - prints a mandelbrot fractal with given size
 * quit - stops the bot
-
-### License
-The code is released under the MIT license. Please refer to the LICENSE file.
